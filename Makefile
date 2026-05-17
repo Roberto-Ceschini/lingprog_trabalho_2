@@ -2,7 +2,7 @@
 CPP = g++
 LD = g++
 CPPFLAGS = -Wall #talvez colocar -std=c++11
-OBJ = main.o
+OBJ = main.o caminho.o aresta.o verticie.o
 BIN = programa
 all: $(BIN)
 .cpp.o:
