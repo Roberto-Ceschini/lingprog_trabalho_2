@@ -22,11 +22,11 @@ int main (){
     Aresta a1 = Aresta(&v1, &v2, 2.2);
     Aresta a2 = Aresta(&v2, &v3, 1.0);
     Aresta a3 = Aresta(&v3, &v4, 3.1);
-    Aresta a4 = Aresta(&v1, &v3, 1.2);
+    Aresta a4 = Aresta(&v3, &v3, 1.2);
 
     Grafo grafo;
     grafo.inserirAresta(&a1);
-    grafo.inserirAresta(&a2);
+    //grafo.inserirAresta(&a2);
     grafo.inserirAresta(&a3);
     grafo.inserirAresta(&a4);
 
@@ -40,6 +40,9 @@ int main (){
             break;
         case 2:
             grafo.exibirGrauVertices();
+            break;
+        case 3:
+            grafo.exibirGrafoAcessivel();
             break;
 
         default:

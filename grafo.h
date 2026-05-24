@@ -14,6 +14,8 @@ class Grafo{
         void inserirAresta(Aresta*);
         void exibirMatrizAdjacencia(); //funcao 1
         void exibirGrauVertices(); //funcao 2
+        void exibirGrafoAcessivel(); //funcao 3
+        void exibirCaminhoMaisCurto(Vertice*, Vertice*); //funcao 4
 
     private:
         vector<Aresta*> arestas;
@@ -28,7 +30,10 @@ class Grafo{
         void setVertices(); //funcao para extrair os vertices unicos do grafo a partir das arestas e armazenar no conjunto vertices
         void setIndiceMatrizVertices(); //funcao para associar cada vertice um indice na matriz de adjacencia
 
-        //---FUNCOES AUXILIARES GRAU DOS VERTICES---
+        //---FUNCOES AUXILIARES GRAFO ACESSIVEL ---
+        vector<Vertice*> obterVizinhos(Vertice* vertice);
+        void dfs(Vertice*, unordered_map<Vertice*, bool>&);
+        bool isAcessivel(); //funcao para verificar se o grafo e acessivel por DFS
 
         //---FUNCOES AUXILIARES CALCULOS---
         float calcularCustoCaminho(vector<Aresta*>);

@@ -60,6 +60,31 @@ void Grafo::exibirGrauVertices() {
 
 }
 
+void Grafo::exibirGrafoAcessivel() {
+    if (arestas.empty()){
+        cout << "Grafo vazio. Nao ha vertices ou arestas para exibir." << endl;
+        return;
+    }
+
+    cout << "----GRAFO ACESSIVEL---:" << endl;
+    if (isAcessivel()){
+        cout << "O grafo e acessivel. Todos os vertices estao conectados." << endl;
+    } else {
+        cout << "O grafo nao e acessivel. Existem vertices isolados ou desconectados." << endl;
+    }
+
+    cout << endl;
+    exibirMatrizAdjacencia();
+}
+
+void Grafo::exibirCaminhoMaisCurto(Vertice* verticeOrigem, Vertice* verticeDestino) {
+    //implementar algoritmo de Dijkstra para encontrar o caminho mais curto entre verticeOrigem e verticeDestino
+    //utilizar a matriz de adjacencia para obter os custos das arestas
+    //imprimir o caminho encontrado e seu custo total
+
+    
+}
+
 
 //Funcoes auxiliares --- MATRIZ DE ADJACENCIA
 void Grafo::montarMatrizAdjacencia(){
@@ -110,6 +135,57 @@ void Grafo::setIndiceMatrizVertices(){
         indiceVertices[vertice] = indice;
         indice++;
     }
+}
+//-----------------------------------------------------------------------------------------------------
+
+//Funcoes auxiliares --- DFS
+vector<Vertice*> Grafo::obterVizinhos(Vertice* vertice) {
+
+    vector<Vertice*> vizinhos;
+
+    int indiceVertice = indiceVertices[vertice];
+
+    for (size_t j = 0; j < vertices.size(); j++){
+        if (matrizAdjacencia[indiceVertice][j] != 0){
+            vizinhos.push_back(vertices[j]);
+        }
+    }
+    return vizinhos;
+}
+
+void Grafo::dfs(Vertice* vertice, unordered_map<Vertice*, bool>& visitados) {
+    //marca o vertice como visitado
+    visitados[vertice] = true;
+
+    vector<Vertice*> vizinhos = obterVizinhos(vertice);
+
+    for (Vertice* vizinho : vizinhos) {
+        // se ainda nao foi visitado, continua a DFS
+        if (!visitados[vizinho]) {
+            dfs(vizinho, visitados);
+        }
+    }
+}
+
+bool Grafo::isAcessivel(){
+ 
+    unordered_map<Vertice*, bool> visitados;
+    
+    for (Vertice* vertice : vertices) {
+        visitados[vertice] = false;
+    }
+
+    Vertice* partida = vertices[0];
+
+    dfs(partida, visitados);
+
+    for (Vertice* vertice : vertices) {
+        if (!visitados[vertice]) {
+            return false; // achou alguem isolado
+        }
+    }
+
+    return true; // todos foram visitados
 }
 //-----------------------------------------------------------------------------------------------------
 
