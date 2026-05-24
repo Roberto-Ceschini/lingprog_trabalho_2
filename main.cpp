@@ -1,23 +1,51 @@
 #include <iostream>
-#include "verticie.h"
+#include "vertice.h"
 #include "aresta.h"
-#include "caminho.h"
+#include "grafo.h"
 
-int main() {
-    Verticie verticeA("A");
-    Verticie verticeB("B");
-    Verticie verticeC("C");
+void menu(){
+    cout << "Menu:" << endl;
+    cout << "1. Imprimir matriz de adjacencia" << endl;
+    cout << "2. Imprimir grau dos vertices" << endl;
+    cout << "3. Verificar se o grafo e conexo" << endl;
+    cout << "4. Imprimir caminho mais curto entre dois vertices" << endl;
+    cout << "5. Imprimir ordem de centralidade dos verices" << endl;
+}
 
-    Aresta arestaAB(1.5, &verticeA, &verticeB);
-    Aresta arestaBC(2.0, &verticeB, &verticeC);
-    Aresta arestaAC(2.5, &verticeA, &verticeC);
+int main (){
 
-    Caminho caminho;
-    caminho.setAresta(&arestaAB);
-    caminho.setAresta(&arestaBC);
-    caminho.setAresta(&arestaAC); // Esta aresta não será adicionada ao caminho
+    Vertice v1 = Vertice("A");
+    Vertice v2 = Vertice("B");
+    Vertice v3 = Vertice("C");
+    Vertice v4 = Vertice("D");
 
-    caminho.imprimirCaminho();
+    Aresta a1 = Aresta(&v1, &v2, 2.2);
+    Aresta a2 = Aresta(&v2, &v3, 1.0);
+    Aresta a3 = Aresta(&v3, &v4, 3.1);
+    Aresta a4 = Aresta(&v1, &v3, 1.2);
+
+    Grafo grafo;
+    grafo.inserirAresta(&a1);
+    grafo.inserirAresta(&a2);
+    grafo.inserirAresta(&a3);
+    grafo.inserirAresta(&a4);
+
+    menu();
+    int opcao;
+    cin >> opcao;
+
+    switch (opcao) {
+        case 1:
+            grafo.exibirMatrizAdjacencia();
+            break;
+        case 2:
+            grafo.exibirGrauVertices();
+            break;
+
+        default:
+            cout << "Opcao invalida." << endl;
+            break;
+    }
 
     return 0;
 }

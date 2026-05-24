@@ -1,23 +1,22 @@
-#include "verticie.h"
-
-using namespace std;
+#include "Vertice.h"
 
 #ifndef ARESTA_H
 #define ARESTA_H
-
 class Aresta {
 
     public:
-        Aresta (float, Verticie*, Verticie*);
+        Aresta (Vertice*, Vertice*, float=1.0);
 
-        float getPeso();
-        Verticie* getVertice1();
-        Verticie* getVertice2();
+        Vertice* getVerticeOrigem();
+        Vertice* getVerticeDestino();
+        float getCusto();
+
 
     private:
-        float peso;
-        Verticie *vertice1;
-        Verticie *vertice2;
+        Vertice *verticeOrigem;
+        Vertice *verticeDestino;
+        float custo;
 
 };
+
 #endif

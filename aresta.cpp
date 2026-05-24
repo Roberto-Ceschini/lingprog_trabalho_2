@@ -1,16 +1,16 @@
 #include "aresta.h"
 
-Aresta::Aresta(float _peso, Verticie* _vertice1, Verticie* _vertice2) : peso(_peso), vertice1(_vertice1), vertice2(_vertice2) {}
+Aresta::Aresta(Vertice* verticeOrigem, Vertice* verticeDestino, float custo) 
+    : verticeOrigem(verticeOrigem), verticeDestino(verticeDestino), custo(custo) {}
 
-float Aresta::getPeso() {
-    return peso;
+Vertice* Aresta::getVerticeOrigem() {
+    return this->verticeOrigem;
 }
 
-Verticie* Aresta::getVertice1() {
-    return vertice1;
+Vertice* Aresta::getVerticeDestino() {
+    return this->verticeDestino;
 }
 
-Verticie* Aresta::getVertice2() {
-    return vertice2;
+float Aresta::getCusto() {
+    return this->custo;
 }
-
