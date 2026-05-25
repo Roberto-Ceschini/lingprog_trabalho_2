@@ -78,27 +78,31 @@ void Grafo::exibirGrafoAcessivel() {
     exibirMatrizAdjacencia();
 }
 
-void Grafo::exibirCaminhoMaisCurto(Vertice* verticeOrigem, Vertice* verticeDestino){
+unordered_map<Vertice*, vector<Vertice*>> Grafo::dijkstra (Vertice* origem, unordered_map<Vertice*, float>& distancias){
 
-    unordered_map<Vertice*, float> distancias;
     unordered_map<Vertice*, bool> visitados;
-    unordered_map<Vertice*, Vertice*> anteriores;
+    unordered_map<Vertice*, vector<Vertice*>> anteriores;
 
     // inicializacao
     for (Vertice* vertice : vertices){
-        distancias[vertice] = numeric_limits<float>::infinity();
+
+        distancias[vertice] =
+            numeric_limits<float>::infinity();
+
         visitados[vertice] = false;
     }
 
-    distancias[verticeOrigem] = 0;
+    distancias[origem] = 0;
 
-    //algoritmo de dijkstra
+    // dijkstra
     for (size_t i = 0; i < vertices.size(); i++){
 
         Vertice* atual = nullptr;
-        float menorDistancia = numeric_limits<float>::infinity();
 
-        //encontrar vertice nao visitado com menor distancia
+        float menorDistancia =
+            numeric_limits<float>::infinity();
+
+        // procurar menor nao visitado
         for (Vertice* vertice : vertices){
 
             if (!visitados[vertice] && distancias[vertice] < menorDistancia){
@@ -108,77 +112,177 @@ void Grafo::exibirCaminhoMaisCurto(Vertice* verticeOrigem, Vertice* verticeDesti
             }
         }
 
-        //se nao encontrou mais caminhos
         if (atual == nullptr){
             break;
         }
 
         visitados[atual] = true;
 
-        vector<Vertice*> vizinhos = obterVizinhos(atual);
+        vector<Vertice*> vizinhos =obterVizinhos(atual);
 
         for (Vertice* vizinho : vizinhos){
 
             int indiceAtual = indiceVertices[atual];
             int indiceVizinho = indiceVertices[vizinho];
-
-            float custo = matrizAdjacencia[indiceAtual][indiceVizinho];
+            float custo =matrizAdjacencia[indiceAtual][indiceVizinho];
             float novaDistancia = distancias[atual] + custo;
 
-            // encontrou caminho melhor
+            // caminho melhor
             if (novaDistancia < distancias[vizinho]){
 
                 distancias[vizinho] = novaDistancia;
-                anteriores[vizinho] = atual;
+
+                anteriores[vizinho].clear();
+
+                anteriores[vizinho].push_back(atual);
+            }
+
+            // caminho empatado
+            else if (novaDistancia == distancias[vizinho]){
+                anteriores[vizinho]
+                    .push_back(atual);
             }
         }
     }
 
-    //verificar se o vertice destino foi visitado
-    if (distancias[verticeDestino] == numeric_limits<float>::infinity()){
+    return anteriores;
+}
 
-        cout << "Nao existe caminho entre " << verticeOrigem->getNome() << " e " << verticeDestino->getNome() << endl;
+void Grafo::reconstruirCaminhos(Vertice* atual, Vertice* origem, unordered_map<Vertice*, vector<Vertice*>>& anteriores, vector<Vertice*>& caminhoAtual, 
+    vector<vector<Vertice*>>& caminhos){
 
+    caminhoAtual.push_back(atual);
+
+    // chegou na origem
+    if (atual == origem){
+
+        vector<Vertice*> caminhoCompleto = caminhoAtual;
+
+        reverse(caminhoCompleto.begin(), caminhoCompleto.end()
+        );
+
+        caminhos.push_back(caminhoCompleto);
+    }
+
+    else{
+
+        for (Vertice* anterior : anteriores[atual]){
+
+            reconstruirCaminhos(anterior, origem, anteriores, caminhoAtual, caminhos);
+        }
+    }
+
+    caminhoAtual.pop_back();
+}
+
+vector<vector<Vertice*>>Grafo::obterCaminhosMinimos(Vertice* origem, Vertice* destino){
+
+    unordered_map<Vertice*, float> distancias;
+    unordered_map<Vertice*, vector<Vertice*>> anteriores = dijkstra(origem, distancias);
+    vector<vector<Vertice*>> caminhos;
+
+    // nao existe caminho
+    if (distancias[destino] == numeric_limits<float>::infinity()){
+        return caminhos;
+    }
+    vector<Vertice*> caminhoAtual;
+
+    reconstruirCaminhos(destino, origem, anteriores, caminhoAtual, caminhos);
+
+    return caminhos;
+}
+
+void Grafo::exibirCaminhoMaisCurto(Vertice* origem, Vertice* destino){
+
+    vector<vector<Vertice*>> caminhos = obterCaminhosMinimos(origem, destino);
+
+    if (caminhos.empty()){
+
+        cout << "Nao existe caminho." << endl;
         return;
     }
 
-    //reconstruir caminho
-    vector<Vertice*> caminho;
+    cout << "-MENORES CAMINHOS-"<< endl;
 
-    Vertice* atual = verticeDestino;
+    for (size_t i = 0; i < caminhos.size(); i++){
 
-    while (atual != nullptr){
+        cout << "Caminho "<< i + 1 << ": ";
 
-        caminho.push_back(atual);
+        for (size_t j = 0; j < caminhos[i].size(); j++){
 
-        if (atual == verticeOrigem){
-            break;
+            cout<< caminhos[i][j]->getNome();
+
+            if (j != caminhos[i].size() - 1){
+                cout << " -> ";
+            }
         }
 
-        atual = anteriores[atual];
+        float custo = calcularCustoVertices(caminhos[i]);
+        cout << " | custo total = "<< fixed << setprecision(1) << custo << endl;
     }
-
-    reverse(caminho.begin(), caminho.end());
-
-    //exibir caminho
-    cout << "----MENOR CAMINHO---" << endl;
-
-    for (size_t i = 0; i < caminho.size(); i++){
-
-        cout << caminho[i]->getNome();
-
-        if (i != caminho.size() - 1){
-            cout << " -> ";
-        }
-    }
-
-    cout << endl;
-
-    cout << "Custo total: " << distancias[verticeDestino] << endl;
 }
 
-void Grafo::exibirOrdemDecrescenteCentralidade() {
-    
+void Grafo::exibirOrdemDecrescenteCentralidade(){
+
+    unordered_map<Vertice*, float> centralidade;
+
+    //inicializar centralidade
+    for (Vertice* vertice : vertices){
+        centralidade[vertice] = 0.0;
+    }
+
+    //percorrer todos os pares
+    for (Vertice* origem : vertices){
+        for (Vertice* destino : vertices){
+            //ignorar mesmo vertice
+            if (origem == destino){
+                continue;
+            }
+
+            vector<vector<Vertice *>> caminhos = obterCaminhosMinimos(origem, destino);
+
+            //quantidade total de menores caminhos
+            int totalCaminhos = caminhos.size();
+
+            if (totalCaminhos == 0){
+                continue;
+            }
+
+            // contar intermediarios
+            for (vector<Vertice*> caminho : caminhos){
+
+                //ignorar origem e destino
+                for (size_t i = 1; i < caminho.size() - 1; i++){
+
+                    Vertice* intermediario = caminho[i];
+
+                    centralidade[intermediario]+= 1.0 / totalCaminhos;
+                }
+            }
+        }
+    }
+
+    //converter para vetor para ordenar
+    vector<pair<Vertice*, float>>ranking;
+
+    for (auto item : centralidade){
+        ranking.push_back(item);
+    }
+
+    //ordenar do menor para menor
+    sort(ranking.begin(),ranking.end(), [](pair<Vertice*, float> a, pair<Vertice*, float> b){
+        return a.second < b.second;
+        }
+    );
+
+    // exibir
+    cout << endl;
+    cout << "----ORDEM DE CENTRALIDADE----"<< endl;
+
+    for (auto item : ranking){
+
+        cout << item.first->getNome() << " -> " << fixed << setprecision(2)<< item.second << endl;
+    }
 }
 
 //Funcoes auxiliares --- MATRIZ DE ADJACENCIA
@@ -286,11 +390,20 @@ bool Grafo::isAcessivel(){
 
 
 //Funcoes auxiliares --- CALCULOS
-float Grafo::calcularCustoCaminho(vector<Aresta*> arestas) {
+float Grafo::calcularCustoVertices(vector<Vertice*> caminho){
+
     float custoTotal = 0.0;
-    for (Aresta* aresta : arestas) {
-        custoTotal += aresta->getCusto();
+
+    for (size_t i = 0;i < caminho.size() - 1;i++){
+        Vertice* origem = caminho[i];
+        Vertice* destino = caminho[i + 1];
+        int indiceOrigem = indiceVertices[origem];
+        int indiceDestino =indiceVertices[destino];
+
+        custoTotal += matrizAdjacencia[indiceOrigem][indiceDestino];
+
     }
+
     return custoTotal;
 }
 

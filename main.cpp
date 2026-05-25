@@ -96,7 +96,7 @@ void menu(Grafo& grafo){
             }
 
             case 5:
-                cout << "Funcionalidade ainda nao implementada." << endl;
+                grafo.exibirOrdemDecrescenteCentralidade();
                 break;
 
             case 6:

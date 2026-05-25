@@ -51,7 +51,7 @@ class Grafo{
         vector<vector<Vertice*>> obterCaminhosMinimos(Vertice*, Vertice*);
 
         //---FUNCOES AUXILIARES CALCULOS---
-        float calcularCustoCaminho(vector<Aresta*>);
+        float calcularCustoVertices(vector<Vertice*>);
         unordered_map<Vertice*, int> calcularGrauVertices();
 };
 
