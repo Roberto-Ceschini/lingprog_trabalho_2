@@ -45,8 +45,7 @@ vector<Aresta*> Arquivo::lerArestas(){
         // criar vertice destino se nao existir
         if (vertices.find(nomeDestino) == vertices.end()){
 
-            vertices[nomeDestino] =
-                new Vertice(nomeDestino);
+            vertices[nomeDestino] = new Vertice(nomeDestino);
         }
 
         Vertice* origem = vertices[nomeOrigem];
