@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <algorithm>
+#include <limits>
 
 void Grafo::inserirAresta(Aresta* aresta) {
     //testar insercao de aresta
@@ -77,14 +78,108 @@ void Grafo::exibirGrafoAcessivel() {
     exibirMatrizAdjacencia();
 }
 
-void Grafo::exibirCaminhoMaisCurto(Vertice* verticeOrigem, Vertice* verticeDestino) {
-    //implementar algoritmo de Dijkstra para encontrar o caminho mais curto entre verticeOrigem e verticeDestino
-    //utilizar a matriz de adjacencia para obter os custos das arestas
-    //imprimir o caminho encontrado e seu custo total
+void Grafo::exibirCaminhoMaisCurto(Vertice* verticeOrigem, Vertice* verticeDestino){
 
-    
+    unordered_map<Vertice*, float> distancias;
+    unordered_map<Vertice*, bool> visitados;
+    unordered_map<Vertice*, Vertice*> anteriores;
+
+    // inicializacao
+    for (Vertice* vertice : vertices){
+        distancias[vertice] = numeric_limits<float>::infinity();
+        visitados[vertice] = false;
+    }
+
+    distancias[verticeOrigem] = 0;
+
+    //algoritmo de dijkstra
+    for (size_t i = 0; i < vertices.size(); i++){
+
+        Vertice* atual = nullptr;
+        float menorDistancia = numeric_limits<float>::infinity();
+
+        //encontrar vertice nao visitado com menor distancia
+        for (Vertice* vertice : vertices){
+
+            if (!visitados[vertice] && distancias[vertice] < menorDistancia){
+
+                menorDistancia = distancias[vertice];
+                atual = vertice;
+            }
+        }
+
+        //se nao encontrou mais caminhos
+        if (atual == nullptr){
+            break;
+        }
+
+        visitados[atual] = true;
+
+        vector<Vertice*> vizinhos = obterVizinhos(atual);
+
+        for (Vertice* vizinho : vizinhos){
+
+            int indiceAtual = indiceVertices[atual];
+            int indiceVizinho = indiceVertices[vizinho];
+
+            float custo = matrizAdjacencia[indiceAtual][indiceVizinho];
+            float novaDistancia = distancias[atual] + custo;
+
+            // encontrou caminho melhor
+            if (novaDistancia < distancias[vizinho]){
+
+                distancias[vizinho] = novaDistancia;
+                anteriores[vizinho] = atual;
+            }
+        }
+    }
+
+    //verificar se o vertice destino foi visitado
+    if (distancias[verticeDestino] == numeric_limits<float>::infinity()){
+
+        cout << "Nao existe caminho entre " << verticeOrigem->getNome() << " e " << verticeDestino->getNome() << endl;
+
+        return;
+    }
+
+    //reconstruir caminho
+    vector<Vertice*> caminho;
+
+    Vertice* atual = verticeDestino;
+
+    while (atual != nullptr){
+
+        caminho.push_back(atual);
+
+        if (atual == verticeOrigem){
+            break;
+        }
+
+        atual = anteriores[atual];
+    }
+
+    reverse(caminho.begin(), caminho.end());
+
+    //exibir caminho
+    cout << "----MENOR CAMINHO---" << endl;
+
+    for (size_t i = 0; i < caminho.size(); i++){
+
+        cout << caminho[i]->getNome();
+
+        if (i != caminho.size() - 1){
+            cout << " -> ";
+        }
+    }
+
+    cout << endl;
+
+    cout << "Custo total: " << distancias[verticeDestino] << endl;
 }
 
+void Grafo::exibirOrdemDecrescenteCentralidade() {
+    
+}
 
 //Funcoes auxiliares --- MATRIZ DE ADJACENCIA
 void Grafo::montarMatrizAdjacencia(){
@@ -217,5 +312,7 @@ unordered_map<Vertice*, int> Grafo::calcularGrauVertices(){
 
 //-----------------------------------------------------------------------------------------------------
 
-
+vector<Vertice*> Grafo::getVertices() {
+    return vertices;
+}
 
