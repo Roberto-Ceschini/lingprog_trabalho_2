@@ -2,6 +2,7 @@
 #include "vertice.h"
 #include "aresta.h"
 #include "grafo.h"
+#include "arquivo.h"
 
 void menu(Grafo& grafo){
 
@@ -111,25 +112,27 @@ void menu(Grafo& grafo){
 }
 
 
-int main (){
+int main(){
 
-    Vertice v1 = Vertice("A");
-    Vertice v2 = Vertice("B");
-    Vertice v3 = Vertice("C");
-    Vertice v4 = Vertice("D");
-
-    Aresta a1 = Aresta(&v1, &v2, 2.2);
-    Aresta a2 = Aresta(&v2, &v3, 1.0);
-    Aresta a3 = Aresta(&v3, &v4, 3.1);
-    Aresta a4 = Aresta(&v3, &v3, 1.2);
-    Aresta a5 = Aresta(&v1, &v4, 4.5);
-
+    //inicializar grafo a partir do arquivo
+    Arquivo arquivo;
     Grafo grafo;
-    grafo.inserirAresta(&a1);
-    grafo.inserirAresta(&a2);
-    grafo.inserirAresta(&a3);
-    grafo.inserirAresta(&a4);
-    grafo.inserirAresta(&a5);
+    vector<Aresta*> arestas;
+
+    arquivo.abrirArquivo("arestas");
+
+    if (!arquivo.verificarArquivo()){
+        cout << "Erro ao abrir arquivo."<< endl;
+        return 1;
+    }
+
+    arestas = arquivo.lerArestas();
+    arquivo.fecharArquivo();
+
+    for (Aresta* aresta : arestas){
+        grafo.inserirAresta(aresta);
+    }
+
     menu(grafo);
 
     return 0;

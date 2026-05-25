@@ -86,9 +86,7 @@ unordered_map<Vertice*, vector<Vertice*>> Grafo::dijkstra (Vertice* origem, unor
     // inicializacao
     for (Vertice* vertice : vertices){
 
-        distancias[vertice] =
-            numeric_limits<float>::infinity();
-
+        distancias[vertice] = numeric_limits<float>::infinity();
         visitados[vertice] = false;
     }
 
@@ -98,13 +96,10 @@ unordered_map<Vertice*, vector<Vertice*>> Grafo::dijkstra (Vertice* origem, unor
     for (size_t i = 0; i < vertices.size(); i++){
 
         Vertice* atual = nullptr;
-
-        float menorDistancia =
-            numeric_limits<float>::infinity();
+        float menorDistancia = numeric_limits<float>::infinity();
 
         // procurar menor nao visitado
         for (Vertice* vertice : vertices){
-
             if (!visitados[vertice] && distancias[vertice] < menorDistancia){
 
                 menorDistancia = distancias[vertice];
@@ -127,24 +122,38 @@ unordered_map<Vertice*, vector<Vertice*>> Grafo::dijkstra (Vertice* origem, unor
             float custo =matrizAdjacencia[indiceAtual][indiceVizinho];
             float novaDistancia = distancias[atual] + custo;
 
+            // //teste imprimir  distancias
+            // for (auto distancia : distancias){
+            //      cout << distancia.first->getNome() << ": " << distancia.second << " ";
+            // }
+            // cout << endl;
+
             // caminho melhor
             if (novaDistancia < distancias[vizinho]){
 
                 distancias[vizinho] = novaDistancia;
-
                 anteriores[vizinho].clear();
-
                 anteriores[vizinho].push_back(atual);
             }
 
             // caminho empatado
             else if (novaDistancia == distancias[vizinho]){
-                anteriores[vizinho]
-                    .push_back(atual);
+                anteriores[vizinho].push_back(atual);
             }
         }
+        // //Teste vizinhos processados
+        // cout << "Processado vertice: " << atual->getNome() << endl;
     }
 
+    // //Teste resultado final
+    // cout << "Anteriores:" << endl;
+    // for (auto item : anteriores){
+    //     cout << item.first->getNome() << ": ";
+    //     for (Vertice* anterior : item.second){
+    //         cout << anterior->getNome() << " ";
+    //     }
+    //     cout << endl;
+    // }
     return anteriores;
 }
 
@@ -158,8 +167,7 @@ void Grafo::reconstruirCaminhos(Vertice* atual, Vertice* origem, unordered_map<V
 
         vector<Vertice*> caminhoCompleto = caminhoAtual;
 
-        reverse(caminhoCompleto.begin(), caminhoCompleto.end()
-        );
+        reverse(caminhoCompleto.begin(), caminhoCompleto.end());
 
         caminhos.push_back(caminhoCompleto);
     }

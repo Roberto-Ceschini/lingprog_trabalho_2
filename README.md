@@ -1,67 +1,122 @@
-Sistema Financeiro
-Descrição
-Sistema desenvolvido em C++ para monitoramento de ativos financeiros e análise de registros históricos.
-
-O programa permite:
-
-cadastro de ativos financeiros;
-inserção de registros de valores;
-cálculo de média móvel;
-ordenação de ativos;
-detecção de variações anormais;
-previsão do próximo valor utilizando regressão linear simples.
-O projeto foi desenvolvido utilizando orientação a objetos, modularização com arquivos .h/.cpp e compilação automatizada com Makefile.
-
 Estrutura do Projeto
 Classes
-RegistroValor
-Responsável por representar um registro de valor associado a um ativo.
+Vertice
 
-Atributos principais:
+Responsável por representar um vértice do grafo.
 
-nome do registro;
-valor numérico.
-Ativo
-Representa um ativo financeiro monitorado pelo sistema.
+Cada vértice possui:
 
-Cada ativo armazena:
+nome identificador.
+Aresta
 
-registros históricos;
-médias móveis;
-previsão do próximo valor;
-variação percentual entre médias móveis.
-SistemaFinanceiro
-Classe responsável pelo gerenciamento geral do sistema e pelo menu interativo.
+Representa uma conexão entre dois vértices do grafo.
 
+Cada aresta armazena:
+
+vértice de origem;
+vértice de destino;
+custo/peso da conexão.
+Grafo
+
+Classe principal responsável por armazenar o grafo e executar os algoritmos de análise.
+
+A estrutura interna utiliza:
+
+matriz de adjacência;
+lista de vértices;
+lista de arestas.
+Arquivo
+
+Classe responsável pela leitura do arquivo .txt de entrada.
+
+Ela realiza:
+
+abertura do arquivo;
+leitura das linhas;
+criação automática das arestas e vértices.
+Formato do Arquivo de Entrada
+
+O arquivo deve conter:
+
+VERTICE_ORIGEM VERTICE_DESTINO PESO
+
+Exemplo:
+
+A B 2.2
+B C 1.0
+C D 3.1
+A D 4.5
+
+Cada linha representa:
+
+origem destino custo
 Funcionalidades
+
 O sistema possui as seguintes funcionalidades disponíveis via menu:
 
-1. Criar Novo Ativo
-Permite cadastrar um novo ativo financeiro no sistema.
+1. Imprimir Matriz de Adjacência
 
-2. Adicionar Registro a Ativo
-Permite adicionar novos registros de valor a um ativo já existente.
+Exibe a matriz de adjacência do grafo contendo os pesos das conexões entre os vértices.
 
-Após a inserção, o sistema realiza automaticamente:
+Exemplo:
 
-cálculo da média móvel;
-cálculo da previsão do próximo valor;
-cálculo da variação percentual.
-3. Exibir Ativos Ordenados
-Exibe os ativos ordenados com base no último valor da média móvel.
+    A   B   C
+A 0.0 2.0 1.0
+B 2.0 0.0 3.0
+C 1.0 3.0 0.0
+2. Imprimir Grau dos Vértices
 
-4. Exibir Média Móvel
-Exibe a média móvel calculada para o ativo selecionado.
+Exibe o grau de cada vértice do grafo.
 
-A média móvel utiliza janela de tamanho 3.
+O grau representa:
 
-5. Exibir Próximo Valor Previsto
-Exibe a previsão do próximo valor do ativo utilizando regressão linear simples.
+quantidade de conexões do vértice
+3. Verificar se o Grafo é Conexo
 
-6. Detectar Variação Anormal
-Detecta variações superiores a 10% entre médias móveis consecutivas.
+Verifica se todos os vértices do grafo estão conectados.
 
-7. Encerrar Sistema
+O algoritmo utilizado é:
+
+Busca em Profundidade (DFS).
+
+O sistema informa se:
+
+o grafo é conexo;
+existem vértices isolados/desconectados.
+4. Imprimir Caminho Mais Curto Entre Dois Vértices
+
+Calcula os menores caminhos entre dois vértices informados pelo usuário utilizando o algoritmo de Dijkstra.
+
+O sistema exibe:
+
+todos os menores caminhos encontrados;
+custo total de cada caminho.
+
+Exemplo:
+
+Caminho 1:
+A -> B -> D | custo total = 2.00
+
+Caminho 2:
+A -> C -> D | custo total = 2.00
+5. Imprimir Ordem de Centralidade dos Vértices
+
+Calcula a centralidade de intermediação dos vértices do grafo.
+
+A centralidade mede:
+
+o quanto um vértice aparece nos menores caminhos do grafo
+
+Os vértices são exibidos em ordem decrescente de importância.
+
+Exemplo:
+
+D -> 5.50
+B -> 3.00
+A -> 1.00
+6. Sair
+
+Finaliza a execução do programa.
 Finaliza a execução do programa.
 
 Requisitos
